@@ -63,10 +63,8 @@ document.querySelector('.add__btn').addEventListener('click', function(){
 		addExpenseObject.updateIncome();	
 	}
 	updateAvailableBudget();
-	updateTable(isIncrease, description, value);
-	console.log(incomeArray);
-	console.log(expenseArray);
-	console.log(incomeTotal);
+	// updateTable(isIncrease, description, value);
+	reBuildTable();
 });
 
 function updateTable(isIncrease, description, value){
