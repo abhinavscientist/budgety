@@ -4,6 +4,8 @@ var expenseTotal = 0;
 var incomeArray = [];
 var expenseArray = [];
 
+init();
+
 (function setMonth(){
 	var date = new Date();
 	var month = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'Nov', 'Dec'];
@@ -36,6 +38,15 @@ function updateAvailableBudget(){
 	document.querySelector('.budget__value').textContent = s + ' ' + (incomeTotal - expenseTotal);	
 }
 
+function updateIncomeTotal(){
+	document.querySelector('.budget__income--value').textContent = '+ ' + incomeTotal; 
+}
+
+function updateExpenseTotal(){
+	document.querySelector('.budget__expenses--value').textContent = '+ ' + expenseTotal;
+	document.querySelector('.budget__expenses--percentage').textContent = ((expenseTotal/incomeTotal)*100).toFixed(2) + '%';
+}
+
 //this will go in event listerner
 document.querySelector('.add__btn').addEventListener('click', function(){
 	var isIncrease = document.querySelector('.add__type').value === 'inc';
@@ -45,13 +56,11 @@ document.querySelector('.add__btn').addEventListener('click', function(){
 		addIncomeObject = new incomeObject(description, value);
 		incomeArray.push(addIncomeObject);
 		addIncomeObject.updateIncome();
-		document.querySelector('.budget__income--value').textContent = '+ ' + incomeTotal; 
+		
 	} else {	
 		addExpenseObject = new expenseObject(description, value); 
 		expenseArray.push(addExpenseObject);		
-		addExpenseObject.updateIncome();
-		document.querySelector('.budget__expenses--value').textContent = '+ ' + expenseTotal;
-		document.querySelector('.budget__expenses--percentage').textContent = ((expenseTotal/incomeTotal)*100).toFixed(2) + '%';
+		addExpenseObject.updateIncome();	
 	}
 	updateAvailableBudget();
 	updateTable(isIncrease, description, value);
@@ -102,8 +111,12 @@ function updateTable(isIncrease, description, value){
 
 	if (isIncrease){
 		document.querySelector('.income__list').appendChild(newrow);
+		updateIncomeTotal();
+		updateAvailableBudget();
 	} else {
 		document.querySelector('.expenses__list').appendChild(newrow);
+		updateExpenseTotal();
+		updateAvailableBudget();
 	}
 	
 }
@@ -111,9 +124,56 @@ function updateTable(isIncrease, description, value){
 // document.querySelector('.item__delete--btn').addEventListener('click', function(){
 // 	console.log();
 // });
-var t;
+var t, id;
 function remove(el){
-	t = el;
-	el.parentElement.parentElement.parentElement.remove();
+	var isIncome, position;
+	id = el.parentElement.parentElement.parentElement.id;
+	isIncome = (id.split('-')[0] === 'income');
+	position = parseInt(id.split('-')[1]);
+	if (isIncome) {
+		incomeArray.splice(position, 1);
+	} else {
+		expenseArray.splice(position, 1);
+	}
+	reBuildTable();
+}
+
+function reBuildTable(){
+	incomeListNode = document.querySelector('.income__list');
+
+	while (incomeListNode.hasChildNodes()){
+		incomeListNode.removeChild(incomeListNode.firstChild);
+	}
+	expensesListNode = document.querySelector('.expenses__list');
+
+	while (expensesListNode.hasChildNodes()){
+		expensesListNode.removeChild(expensesListNode.firstChild);
+	}
+
+	incomeTotal = 0;
+	for (var i = 0; i < incomeArray.length; i++) {
+		incomeTotal += incomeArray[i].amount;
+	}
+	for (var i = 0; i < incomeArray.length; i++) {
+		updateTable(true, incomeArray[i].name, incomeArray[i].amount);
+	}
+
+	expenseTotal = 0;
+	for (var i = 0; i < expenseArray.length; i++) {
+		expenseTotal += expenseArray[i].amount;
+	}
+	for (var i = 0; i < expenseArray.length; i++) {
+		updateTable(false, expenseArray[i].name, expenseArray[i].amount);
+	}
+	
+	updateIncomeTotal();
+	updateExpenseTotal();
+	updateAvailableBudget();	
+}
+
+function init(){
+	updateIncomeTotal();
+	updateExpenseTotal();
+	updateAvailableBudget();
 }
 
