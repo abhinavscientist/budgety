@@ -23,7 +23,7 @@ var expenseObject = function(name, amount){
 	this.amount = amount;
 	this.updateIncome = function(){
 		expenseTotal += amount;
-	}
+	};
 };
 
 function updateAvailableBudget(){
@@ -51,7 +51,7 @@ document.querySelector('.add__btn').addEventListener('click', function(){
 		expenseArray.push(addExpenseObject);		
 		addExpenseObject.updateIncome();
 		document.querySelector('.budget__expenses--value').textContent = '+ ' + expenseTotal;
-		document.querySelector('.budget__expenses--percentage').textContent = parseInt((expenseTotal/incomeTotal)*100) + '%';
+		document.querySelector('.budget__expenses--percentage').textContent = ((expenseTotal/incomeTotal)*100).toFixed(2) + '%';
 	}
 	updateAvailableBudget();
 	updateTable(isIncrease, description, value);
@@ -89,13 +89,13 @@ function updateTable(isIncrease, description, value){
 	if (!isIncrease){
 		itempercentage = document.createElement('div');
 		itempercentage.className = "item__percentage";
-		itempercentage.textContent = parseInt((value/incomeTotal)*100) + '%';
+		itempercentage.textContent = ((value/incomeTotal)*100).toFixed(2) + '%';
 		innerdesc.appendChild(itempercentage);
 	}
 
 	itemdelete = document.createElement('div');
 	itemdelete.className = "item__delete";
-	itemdelete.innerHTML = '<button class=\"item__delete--btn\"><i class=\"ion-ios-close-outline\"></i></button>';
+	itemdelete.innerHTML = '<button onclick=\"remove(this)\" class=\"item__delete--btn\"><i class=\"ion-ios-close-outline\"></i></button>';
 	innerdesc.appendChild(itemdelete);
 
 	newrow.appendChild(innerdesc);
@@ -106,5 +106,14 @@ function updateTable(isIncrease, description, value){
 		document.querySelector('.expenses__list').appendChild(newrow);
 	}
 	
+}
+
+// document.querySelector('.item__delete--btn').addEventListener('click', function(){
+// 	console.log();
+// });
+var t;
+function remove(el){
+	t = el;
+	el.parentElement.parentElement.parentElement.remove();
 }
 
