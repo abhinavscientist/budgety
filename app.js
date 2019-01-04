@@ -4,6 +4,12 @@ var expenseTotal = 0;
 var incomeArray = [];
 var expenseArray = [];
 
+(function setMonth(){
+	var date = new Date();
+	var month = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'Nov', 'Dec'];
+	document.querySelector('.budget__title--month').textContent = month[date.getMonth()];
+})();
+
 var incomeObject = function(name, amount){
 	this.name = name;
 	this.amount = amount;
@@ -48,9 +54,57 @@ document.querySelector('.add__btn').addEventListener('click', function(){
 		document.querySelector('.budget__expenses--percentage').textContent = parseInt((expenseTotal/incomeTotal)*100) + '%';
 	}
 	updateAvailableBudget();
+	updateTable(isIncrease, description, value);
 	console.log(incomeArray);
 	console.log(expenseArray);
 	console.log(incomeTotal);
 });
 
+function updateTable(isIncrease, description, value){
+	var newrow = document.createElement('div');
+	newrow.className = "item clearfix";
+	var idprefix, idsuffix;
+	if (isIncrease){
+		idprefix = "income-";
+		idsuffix = document.querySelector('.income__list').children.length;
+	} else {
+		idprefix = "expense-";
+		idsuffix = document.querySelector('.expenses__list').children.length;
+	}
+	newrow.id = idprefix + idsuffix;
+
+	itemdesc = document.createElement('div');
+	itemdesc.className = 'item__description';
+	itemdesc.textContent = description;
+	newrow.appendChild(itemdesc);
+
+	innerdesc = document.createElement('div');
+	innerdesc.className = 'right clearfix';
+
+	itemvalue = document.createElement('div');
+	itemvalue.className = "item__value";
+	itemvalue.textContent = value;
+	innerdesc.appendChild(itemvalue);
+
+	if (!isIncrease){
+		itempercentage = document.createElement('div');
+		itempercentage.className = "item__percentage";
+		itempercentage.textContent = parseInt((value/incomeTotal)*100) + '%';
+		innerdesc.appendChild(itempercentage);
+	}
+
+	itemdelete = document.createElement('div');
+	itemdelete.className = "item__delete";
+	itemdelete.innerHTML = '<button class=\"item__delete--btn\"><i class=\"ion-ios-close-outline\"></i></button>';
+	innerdesc.appendChild(itemdelete);
+
+	newrow.appendChild(innerdesc);
+
+	if (isIncrease){
+		document.querySelector('.income__list').appendChild(newrow);
+	} else {
+		document.querySelector('.expenses__list').appendChild(newrow);
+	}
+	
+}
 
