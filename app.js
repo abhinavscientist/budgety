@@ -44,7 +44,8 @@ function updateIncomeTotal(){
 
 function updateExpenseTotal(){
 	document.querySelector('.budget__expenses--value').textContent = '+ ' + expenseTotal;
-	document.querySelector('.budget__expenses--percentage').textContent = ((expenseTotal/incomeTotal)*100).toFixed(2) + '%';
+	budgetpercent = incomeTotal==0? 0 : ((expenseTotal/incomeTotal)*100).toFixed(2);
+	document.querySelector('.budget__expenses--percentage').textContent = budgetpercent + '%';
 }
 
 //this will go in event listerner
@@ -55,14 +56,13 @@ document.querySelector('.add__btn').addEventListener('click', function(){
 	if ( isIncrease ){
 		addIncomeObject = new incomeObject(description, value);
 		incomeArray.push(addIncomeObject);
-		addIncomeObject.updateIncome();
-		
+		// addIncomeObject.updateIncome();
 	} else {	
 		addExpenseObject = new expenseObject(description, value); 
 		expenseArray.push(addExpenseObject);		
-		addExpenseObject.updateIncome();	
+		// addExpenseObject.updateIncome();	
 	}
-	updateAvailableBudget();
+	// updateAvailableBudget();
 	// updateTable(isIncrease, description, value);
 	reBuildTable();
 });
@@ -152,6 +152,7 @@ function reBuildTable(){
 	for (var i = 0; i < incomeArray.length; i++) {
 		incomeTotal += incomeArray[i].amount;
 	}
+
 	for (var i = 0; i < incomeArray.length; i++) {
 		updateTable(true, incomeArray[i].name, incomeArray[i].amount);
 	}
