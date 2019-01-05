@@ -28,6 +28,11 @@ init();
 
 //set up event listener
 document.querySelector('.add__btn').addEventListener('click', ctrlAddItem);
+document.querySelector('.add__value').addEventListener('keydown', function(e){
+	if (e.keyCode === 13) {
+		ctrlAddItem();
+	}
+});
 
 //ctrl for add item
 function ctrlAddItem(){
@@ -147,6 +152,7 @@ function getInput(){
 	var type = document.querySelector('.add__type').value === 'inc'? 0:1;
 	var description = document.querySelector('.add__description').value;
 	var amount = parseFloat(document.querySelector('.add__value').value);
+	clearFields();
 	return {'type': type, 'description': description, 'amount': amount};
 }
 
@@ -155,6 +161,7 @@ function getInput(){
 function clearFields(){
 	document.querySelector('.add__description').value = '';
 	document.querySelector('.add__value').value = '';
+	document.querySelector('.add__description').select();
 }
 
 //displayBudget
